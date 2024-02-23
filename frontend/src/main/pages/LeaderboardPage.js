@@ -10,45 +10,50 @@ import { useBackend } from "main/utils/useBackend";
 import { useCurrentUser } from "main/utils/currentUser";
 import Background from "../../assets/PlayPageBackground.png";
 
-import { useNavigate } from 'react-router-dom'
-import { Button } from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 export default function LeaderboardPage() {
+    const { commonsId } = useParams();
+    const { data: currentUser } = useCurrentUser();
 
-  const { commonsId } = useParams();
-  const { data: currentUser } = useCurrentUser();
-
-  // Stryker disable all 
-  const { data: userCommons, error: _error, status: _status } =
-    useBackend(
-      [`/api/usercommons/commons/all?commonsId=${commonsId}`],
-      {
-        method: "GET",
-        url: "/api/usercommons/commons/all",
-        params: {
-          commonsId: commonsId
-        }
-      },
-      []
+    // Stryker disable all
+    const {
+        data: userCommons,
+        error: _error,
+        status: _status,
+    } = useBackend(
+        [`/api/usercommons/commons/all?commonsId=${commonsId}`],
+        {
+            method: "GET",
+            url: "/api/usercommons/commons/all",
+            params: {
+                commonsId: commonsId,
+            },
+        },
+        []
     );
-  // Stryker restore all 
+    // Stryker restore all
 
-  // Stryker disable all 
-  const { data: commons, error: _commonsError, status: _commonsStatus } =
-    useBackend(
-      [`/api/commons?id=${commonsId}`],
-      {
-        method: "GET",
-        url: "/api/commons",
-        params: {
-          id: commonsId
-        }
-      },
-      []
+    // Stryker disable all
+    const {
+        data: commons,
+        error: _commonsError,
+        status: _commonsStatus,
+    } = useBackend(
+        [`/api/commons?id=${commonsId}`],
+        {
+            method: "GET",
+            url: "/api/commons",
+            params: {
+                id: commonsId,
+            },
+        },
+        []
     );
-  // Stryker restore all 
+    // Stryker restore all
 
-  const navigate = useNavigate();
+    const navigate = useNavigate();
 
   const showLeaderboard = (hasRole(currentUser, "ROLE_ADMIN") || commons.showLeaderboard );
   return (
