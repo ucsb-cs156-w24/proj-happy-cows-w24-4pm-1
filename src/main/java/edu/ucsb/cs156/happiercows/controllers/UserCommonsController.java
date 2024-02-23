@@ -19,6 +19,7 @@ import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import edu.ucsb.cs156.happiercows.errors.NoCowsException;
 import edu.ucsb.cs156.happiercows.errors.NotEnoughMoneyException;
+import edu.ucsb.cs156.happiercows.errors.CannotSellNegativeException;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
@@ -113,8 +114,10 @@ public class UserCommonsController extends ApiController {
         .orElseThrow(
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
 
-
-        if(userCommons.getNumOfCows() >= numCows ){
+        if(numCows < 0){
+          throw new CannotSellNegativeException("You cannot sell a negative number of cows!");
+        }
+        else if(userCommons.getNumOfCows() >= numCows ){
           double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
           userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
           userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
