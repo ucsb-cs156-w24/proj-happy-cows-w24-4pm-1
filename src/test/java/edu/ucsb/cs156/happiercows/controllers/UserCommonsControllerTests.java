@@ -426,11 +426,11 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
 
         // act
-        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=1")
+        MvcResult response = mockMvc.perform(put("/api/usercommons/sell?commonsId=1&numCows=-11")
                 .with(csrf())).andExpect(status().is(400)).andReturn();
 
         // assert
-        String expectedString = "{\"message\":\"You do not have enough cows to sell!\",\"type\":\"NoCowsException\"}";
+        String expectedString = "{\"message\":\"You cannot sell a negative number of cows!\",\"type\":\"CannotSellNegativeException\"}";
         Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
         Map<String, Object> jsonResponse = responseToJson(response);
         assertEquals(expectedJson, jsonResponse);
