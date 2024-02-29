@@ -30,6 +30,7 @@ public class Commons {
     private LocalDateTime startingDate;
     private LocalDateTime lastDate;
     private boolean showLeaderboard;
+    private boolean showChat;
     
     private int capacityPerUser;
     private int carryingCapacity;
