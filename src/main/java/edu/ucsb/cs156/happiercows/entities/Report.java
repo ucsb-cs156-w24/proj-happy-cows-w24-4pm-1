@@ -31,6 +31,7 @@ public class Report {
     private double startingBalance;
     private LocalDateTime startingDate;
     private boolean showLeaderboard;
+    private boolean showChat;
     private int carryingCapacity;
     private double degradationRate;
 
