@@ -8,10 +8,9 @@ function AnnouncementsForm({initialAnnouncements, submitAction, buttonLabel = "C
         register,
         formState: {errors},
         handleSubmit,
-        reset,
     } = useForm(
         // modifiedCommons is guaranteed to be defined (initialCommons or {})
-        {defaultValues: initialAnnouncements}
+        {defaultValues: initialAnnouncements || {}, }
     );
 
     const testIdPrefix = "announcementsForm";
@@ -51,9 +50,10 @@ function AnnouncementsForm({initialAnnouncements, submitAction, buttonLabel = "C
             <Form.Group className="mb-3" >
                 <Form.Label htmlFor="announcement">announcement</Form.Label>
                 <Form.Control
+                    as="textarea" 
+                    rows={4}
                     data-testid={testIdPrefix + "-announcement"}
                     id="announcement"
-                    type="text"
                     isInvalid={Boolean(errors.announcement)}
                     {...register("announcement", {
                         required: "announcement is required.",
@@ -77,8 +77,6 @@ function AnnouncementsForm({initialAnnouncements, submitAction, buttonLabel = "C
         </Form>
 
     );
-
-
 
 }
 export default AnnouncementsForm;

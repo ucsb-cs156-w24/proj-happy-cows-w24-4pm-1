@@ -1,5 +1,6 @@
 import React from 'react';
-import AnnouncementsForm from "main/components/Announcements/AnnouncementsForm"
+import AnnouncementsForm from "main/components/Announcements/AnnouncementsForm";
+import announcementsFixtures from 'fixtures/announcementsFixtures';
 
 export default {
     title: 'components/Announcements/AnnouncementsForm',
@@ -21,4 +22,15 @@ Create.args = {
         window.alert("Submit was clicked with data: " + JSON.stringify(data));
    }
 
+};
+
+export const Update = Template.bind({});
+
+Update.args = {
+    initialAnnouncements: announcementsFixtures.oneAnnouncement[0].announcements,
+    buttonLabel: "Update",
+    submitAction: (data) => {
+        console.log("Submit was clicked with data: ", data); 
+        window.alert("Submit was clicked with data: " + JSON.stringify(data));
+   }
 };
