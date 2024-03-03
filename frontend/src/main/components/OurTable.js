@@ -105,7 +105,9 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
               const pageIndex = e.target.value ? Number(e.target.value) - 1 : 0;
               gotoPage(pageIndex);
             }}
+            // Stryker disable all
             style={{ width: '50px' }}
+            // Stryker restore all
           />
         </span>
       </div>

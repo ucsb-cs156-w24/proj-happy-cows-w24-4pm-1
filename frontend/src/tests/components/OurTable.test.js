@@ -145,11 +145,15 @@ describe("OurTable tests", () => {
 
         expect(await screen.findByTestId("sampleTestId-header-col1")).toBeInTheDocument();
 
+        // Ensure 10th entry exists but 11th does not
+
         const col1Row9 = screen.getByTestId("sampleTestId-cell-row-9-col-col1");
         expect(col1Row9).toHaveTextContent("10");
 
         const col1Row10BeforeNext = screen.queryByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10BeforeNext).toBeNull();
+
+        // After Next, 11th entry should show
 
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);
@@ -157,6 +161,10 @@ describe("OurTable tests", () => {
         const col1Row10 = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10).toHaveTextContent("holy moly");
 
+        const col1Row9AfterNext = screen.queryByTestId("sampleTestId-cell-row-9-col-col1");
+        expect(col1Row9AfterNext).toBeNull();
+
+        //next again, should 
         fireEvent.click(nextButton);
         expect(col1Row10).toHaveTextContent("holy moly");
 
@@ -177,6 +185,6 @@ describe("OurTable tests", () => {
         expect(checkTwice).toHaveTextContent("holy moly");
 
         const nePage = screen.getByRole('spinbutton');
-        fireEvent.change(nePage, { target: { value: "" } });
+        fireEvent.change(nePage, { target: { value: "45" } });
     });
 });
