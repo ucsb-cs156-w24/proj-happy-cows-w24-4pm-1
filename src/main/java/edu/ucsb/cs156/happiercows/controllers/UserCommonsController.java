@@ -120,15 +120,10 @@ public class UserCommonsController extends ApiController {
 
 
         if(userCommons.getNumOfCows() >= numCows ){
-          if(numCows > 0){
-            double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
-            userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
-            userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
-            userCommons.setCowsSold(userCommons.getCowsSold() + numCows);
-          }
-          else{
-            throw new NoCowsException("You cannot sell negative cows!");
-          }
+          double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
+          userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
+          userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
+          userCommons.setCowsSold(userCommons.getCowsSold() + numCows);
         }
         else{
           throw new NoCowsException("You do not have enough cows to sell!");
