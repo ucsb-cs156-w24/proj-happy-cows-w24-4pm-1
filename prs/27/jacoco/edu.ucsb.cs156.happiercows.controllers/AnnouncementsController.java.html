@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnouncementsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">AnnouncementsController.java</span></div><h1>AnnouncementsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.entities.Announcements;
+import edu.ucsb.cs156.happiercows.repositories.AnnouncementsRepository;
+import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+import java.time.LocalDateTime;
+
+@Tag(name = &quot;Announcements&quot;)
+@RequestMapping(&quot;/api/announcements&quot;)
+@RestController
+<span class="nc" id="L35">@Slf4j</span>
+<span class="nc" id="L36">public class AnnouncementsController extends ApiController{</span>
+    @Autowired
+    AnnouncementsRepository announcementsRepository;
+
+    @Autowired
+    CommonsRepository commonsRepository;
+
+    @Operation(summary= &quot;List all announcements&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;Announcements&gt; allAnnouncements() {
+<span class="nc" id="L47">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
+<span class="nc" id="L48">        return announcements;</span>
+    }
+
+    @Operation(summary= &quot;Create a new announcement&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;/post&quot;)
+    public ResponseEntity&lt;?&gt; postAnnouncements(
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam long commonsId,
+            @Parameter(name = &quot;start&quot;, description = &quot;in iso format, e.g. YYYY-mm-ddTHH:MM:SSorg/wiki/ISO_8601&quot;) @RequestParam(&quot;start&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @Parameter(name = &quot;end&quot;, description = &quot;in iso format, e.g. YYYY-mm-ddTHH:MM:SSorg/wiki/ISO_8601&quot;) @RequestParam(value = &quot;end&quot;, required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @Parameter(name = &quot;announcement&quot;) @RequestParam String announcement)
+            throws JsonProcessingException {
+        
+        // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        // See: https://www.baeldung.com/spring-date-parameters
+<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
+<span class="nc" id="L64">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
+        }
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
+<span class="nc" id="L67">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
+        }
+<span class="nc" id="L69">        Announcements newAnnouncement = new Announcements();</span>
+<span class="nc" id="L70">        newAnnouncement.setCommonsId(commonsId);</span>
+<span class="nc" id="L71">        newAnnouncement.setStart(start);</span>
+<span class="nc" id="L72">        newAnnouncement.setEnd(end);</span>
+<span class="nc" id="L73">        newAnnouncement.setAnnouncement(announcement);</span>
+
+<span class="nc" id="L75">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
+
+<span class="nc" id="L77">        return ResponseEntity.ok(savedAnnouncement);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
