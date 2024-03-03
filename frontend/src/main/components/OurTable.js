@@ -102,7 +102,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
             type="number"
             defaultValue={currentPage + 1}
             onChange={e => {
-              const pageIndex = e.target.value ? Number(e.target.value) - 1 : 0;
+              const pageIndex = e.target.value ? Number(e.target.value) -  1 : 0;
               gotoPage(pageIndex);
             }}
             // Stryker disable all

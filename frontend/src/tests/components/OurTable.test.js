@@ -185,8 +185,17 @@ describe("OurTable tests", () => {
         expect(checkTwice).toHaveTextContent("holy moly");
 
         const nePage = screen.getByRole('spinbutton');
-        fireEvent.change(nePage, { target: { value: "45" } });
+        fireEvent.change(nePage, { target: { value: "1" } });
+        
+        const eforeNext = screen.queryByTestId("sampleTestId-cell-row-10-col-col1");
+        expect(eforeNext).toBeNull();
 
+        const sumPage = screen.getByRole('spinbutton');
+        fireEvent.change(sumPage, { target: { value: "45" } });
+
+        const checkThrice = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
+        expect(checkThrice).toHaveTextContent("holy moly");
+        
         const nonePage = screen.getByRole('spinbutton');
         fireEvent.change(nonePage, { target: { value: "" } });
     });
