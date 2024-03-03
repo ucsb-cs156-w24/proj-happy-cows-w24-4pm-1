@@ -144,16 +144,29 @@ describe("OurTable tests", () => {
         );
 
         expect(await screen.findByTestId("sampleTestId-header-col1")).toBeInTheDocument();
+
+        const col1Row9 = screen.getByTestId("sampleTestId-cell-row-9-col-col1");
+        expect(col1Row9).toHaveTextContent("10");
+
+        const col1Row10BeforeNext = screen.queryByTestId("sampleTestId-cell-row-10-col-col1");
+        expect(col1Row10BeforeNext).toBeNull();
+
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);
 
         const col1Row10 = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10).toHaveTextContent("holy moly");
 
+        fireEvent.click(nextButton);
+        expect(col1Row10).toHaveTextContent("holy moly");
+
         const prevButton = screen.getByText("Previous");
         fireEvent.click(prevButton);
 
         const col1Row0 = screen.getByTestId("sampleTestId-cell-row-0-col-col1");
+        expect(col1Row0).toHaveTextContent("Hello");
+
+        fireEvent.click(prevButton);
         expect(col1Row0).toHaveTextContent("Hello");
 
         await screen.findByText("| Go to page:")
