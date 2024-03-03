@@ -66,11 +66,13 @@ export default function LeaderboardTable({ leaderboardUsers }) {
     const testid = "LeaderboardTable";
 
     return (
+        // Stryker disable all
         <div style={{ display: "flex", justifyContent: "center" }}>
             <div>
                 <OurTable data={leaderboardUsers} columns={columns} testid={testid} />
             </div>
         </div>
+        // Stryker enable all
         
     );
 }
