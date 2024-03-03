@@ -120,23 +120,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 <span class="fc bfc" id="L122" title="All 2 branches covered.">        if(userCommons.getNumOfCows() &gt;= numCows ){</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">          if(numCows &gt; 0){</span>
-<span class="fc" id="L124">            double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;</span>
-<span class="fc" id="L125">            userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));</span>
-<span class="fc" id="L126">            userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);</span>
-<span class="fc" id="L127">            userCommons.setCowsSold(userCommons.getCowsSold() + numCows);</span>
-<span class="fc" id="L128">          }</span>
-          else{
-<span class="fc" id="L130">            throw new NoCowsException(&quot;You cannot sell negative cows!&quot;);</span>
-          }
-        }
+<span class="fc" id="L123">          double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;</span>
+<span class="fc" id="L124">          userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));</span>
+<span class="fc" id="L125">          userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);</span>
+<span class="fc" id="L126">          userCommons.setCowsSold(userCommons.getCowsSold() + numCows);</span>
+<span class="fc" id="L127">        }</span>
         else{
-<span class="fc" id="L134">          throw new NoCowsException(&quot;You do not have enough cows to sell!&quot;);</span>
+<span class="fc" id="L129">          throw new NoCowsException(&quot;You do not have enough cows to sell!&quot;);</span>
         }
-<span class="fc" id="L136">        userCommonsRepository.save(userCommons);</span>
+<span class="fc" id="L131">        userCommonsRepository.save(userCommons);</span>
 
-<span class="fc" id="L138">        String body = mapper.writeValueAsString(userCommons);</span>
-<span class="fc" id="L139">        return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L133">        String body = mapper.writeValueAsString(userCommons);</span>
+<span class="fc" id="L134">        return ResponseEntity.ok().body(body);</span>
     }
 
     
@@ -146,11 +141,11 @@ import org.springframework.web.bind.annotation.PutMapping;
     @GetMapping(&quot;/commons/all&quot;)
     public  ResponseEntity&lt;String&gt; getUsersCommonsByCommonsId(
         @Parameter(name=&quot;commonsId&quot;) @RequestParam Long commonsId) throws JsonProcessingException {
-<span class="fc" id="L149">      Iterable&lt;UserCommons&gt; uc = userCommonsRepository.findByCommonsId(commonsId);</span>
+<span class="fc" id="L144">      Iterable&lt;UserCommons&gt; uc = userCommonsRepository.findByCommonsId(commonsId);</span>
       
    
-<span class="fc" id="L152">    String body = mapper.writeValueAsString(uc);</span>
-<span class="fc" id="L153">    return ResponseEntity.ok().body(body);</span>
+<span class="fc" id="L147">    String body = mapper.writeValueAsString(uc);</span>
+<span class="fc" id="L148">    return ResponseEntity.ok().body(body);</span>
   }
 
 }
