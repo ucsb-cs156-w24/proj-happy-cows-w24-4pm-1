@@ -21,6 +21,54 @@ describe("OurTable tests", () => {
             col2: 'you want',
             createdAt: '2023-04-01T23:00:00.000',
             log: "bar\n  baz",
+        },
+        {
+            col1: '4',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '5',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '6',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '7',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '8',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '9',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: '10',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
+        },
+        {
+            col1: 'holy moly',
+            col2: 'you want',
+            createdAt: '2023-04-01T23:00:00.000',
+            log: "bar\n  baz",
         }
     ];
     const clickMeCallback = jest.fn();
@@ -88,5 +136,34 @@ describe("OurTable tests", () => {
 
         fireEvent.click(col1Header);
         expect(await screen.findByText("🔽")).toBeInTheDocument();
+    });
+
+    test("click on next and change pages", async () => {
+        render(
+            <OurTable columns={columns} data={threeRows} testid={"sampleTestId"} />
+        );
+
+        expect(await screen.findByTestId("sampleTestId-header-col1")).toBeInTheDocument();
+        const nextButton = screen.getByText("Next");
+        fireEvent.click(nextButton);
+
+        const col1Row10 = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
+        expect(col1Row10).toHaveTextContent("holy moly");
+
+        const prevButton = screen.getByText("Previous");
+        fireEvent.click(prevButton);
+
+        const col1Row0 = screen.getByTestId("sampleTestId-cell-row-0-col-col1");
+        expect(col1Row0).toHaveTextContent("Hello");
+
+        await screen.findByText("| Go to page:")
+        const changePage = screen.getByRole('spinbutton');
+        fireEvent.change(changePage, { target: { value: "2" } });
+
+        const checkTwice = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
+        expect(checkTwice).toHaveTextContent("holy moly");
+
+        const nePage = screen.getByRole('spinbutton');
+        fireEvent.change(nePage, { target: { value: "" } });
     });
 });
