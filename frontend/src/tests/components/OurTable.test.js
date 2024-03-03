@@ -186,5 +186,8 @@ describe("OurTable tests", () => {
 
         const nePage = screen.getByRole('spinbutton');
         fireEvent.change(nePage, { target: { value: "45" } });
+
+        const nonePage = screen.getByRole('spinbutton');
+        fireEvent.change(nonePage, { target: { value: "" } });
     });
 });
