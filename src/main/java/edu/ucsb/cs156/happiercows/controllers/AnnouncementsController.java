@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +74,50 @@ public class AnnouncementsController extends ApiController{
         Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);
 
         return ResponseEntity.ok(savedAnnouncement);
+    }
+
+
+    @Operation(summary= "Get a single helprequest")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("")
+    public Announcements getById(
+            @Parameter(name="id") @RequestParam Long id) {
+        Announcements announcements = announcementsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Announcements.class, id));
+
+        return announcements;
+    }
+
+
+    @Operation(summary= "Delete a helprequest")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("")
+    public Object deleteHelpRequest(
+            @Parameter(name="id") @RequestParam Long id) {
+        Announcements announcements = announcementsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Announcements.class, id));
+
+        announcementsRepository.delete(announcements);
+        return genericMessage("Announcement with id %s deleted".formatted(id));
+    }
+
+    @Operation(summary= "Update a single helprequest")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("")
+    public Announcements updateHelpRequest(
+            @Parameter(name="id") @RequestParam Long id,
+            @RequestBody @Valid Announcements incoming) {
+
+        Announcements announcements = announcementsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Announcements.class, id));
+
+        announcements.setCommonsId(incoming.getCommonsId());
+        announcements.setStart(incoming.getStart());
+        announcements.setEnd(incoming.getEnd());
+        announcements.setAnnouncement(incoming.getAnnouncement());
+
+        announcementsRepository.save(announcements);
+
+        return announcements;
     }
 }
