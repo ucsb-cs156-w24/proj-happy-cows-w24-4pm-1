@@ -72,17 +72,17 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         when(announcementsRepository.findAll()).thenReturn(Arrays.asList(announcement));
 
-        // Act & Assert
-        mockMvc.perform(get("/api/announcements/all"))
+        //act 
+        MvcResult response = mockMvc.perform(get("/api/announcements/all"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(0))
-                .andExpect(jsonPath("$[0].commonsId").value(1))
-                .andExpect(jsonPath("$[0].start").value("2024-01-01T00:00:00"))
-                .andExpect(jsonPath("$[0].end").value("2024-01-01T00:00:00"))
-                .andExpect(jsonPath("$[0].announcement").value("Test announcement"));
+                .andReturn();
 
-        // Verify
         verify(announcementsRepository, times(1)).findAll();
+
+        String responseString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(Arrays.asList(announcement));
+        log.info("Got back from API: {}",responseString);
+        assertEquals(expectedResponseString, responseString);
     }
 
     @WithMockUser(roles = {"ADMIN"})
