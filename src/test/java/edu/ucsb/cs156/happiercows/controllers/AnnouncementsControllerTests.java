@@ -121,6 +121,40 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
     @WithMockUser(roles = {"ADMIN"})
     @Test
+    public void adminCanPostAnnouncementsWithNoEnd() throws Exception {
+        Long commonsId = 1L;
+        LocalDateTime start = LocalDateTime.parse("2024-01-01T00:00:00");
+        LocalDateTime end = null;
+        String announcement = "Test announcement";
+
+
+        Announcements announcements = new Announcements();
+        announcements.setCommonsId(commonsId);
+        announcements.setStart(start);
+        announcements.setEnd(end);
+        announcements.setAnnouncement(announcement);
+
+        when(announcementsRepository.save(any(Announcements.class))).thenReturn(announcements);
+        when(commonsRepository.findById(commonsId)).thenReturn(Optional.of(new Commons()));
+
+
+        //act 
+        MvcResult response = mockMvc.perform(post("/api/announcements/post?commonsId={commonsId}&start={start}&end={end}&announcement={announcement}", commonsId, start, end, announcement).with(csrf()))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // assert
+        verify(commonsRepository, times(1)).findById(commonsId);
+        verify(announcementsRepository, times(1)).save(any(Announcements.class));
+
+        String responseString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(announcements);
+        log.info("Got back from API: {}",responseString);
+        assertEquals(expectedResponseString, responseString);
+    }
+
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
     public void adminCannotPostEndDateBeforeStartDate() throws Exception {
         Long commonsId = 1L;
         LocalDateTime start = LocalDateTime.parse("2024-01-03T00:00:00");
