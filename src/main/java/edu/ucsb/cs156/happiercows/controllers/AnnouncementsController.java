@@ -77,7 +77,7 @@ public class AnnouncementsController extends ApiController{
     }
 
 
-    @Operation(summary= "Get a single helprequest")
+    @Operation(summary= "Get a single announcement")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("")
     public Announcements getById(
@@ -89,10 +89,10 @@ public class AnnouncementsController extends ApiController{
     }
 
 
-    @Operation(summary= "Delete a helprequest")
+    @Operation(summary= "Delete a announcement")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("")
-    public Object deleteHelpRequest(
+    public Object deleteAnnouncements(
             @Parameter(name="id") @RequestParam Long id) {
         Announcements announcements = announcementsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Announcements.class, id));
@@ -101,10 +101,10 @@ public class AnnouncementsController extends ApiController{
         return genericMessage("Announcement with id %s deleted".formatted(id));
     }
 
-    @Operation(summary= "Update a single helprequest")
+    @Operation(summary= "Update a single announcements")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("")
-    public Announcements updateHelpRequest(
+    public Announcements updateAnnouncements(
             @Parameter(name="id") @RequestParam Long id,
             @RequestBody @Valid Announcements incoming) {
 
