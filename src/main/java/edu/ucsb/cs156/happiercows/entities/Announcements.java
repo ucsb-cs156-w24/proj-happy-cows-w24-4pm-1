@@ -29,8 +29,7 @@ public class Announcements {
 
   @Builder.Default
   private LocalDateTime start = LocalDateTime.now();
-
- @Builder.Default
+  @Builder.Default
   private LocalDateTime end = null;
   private String announcement;
 }
