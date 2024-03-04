@@ -31,7 +31,6 @@ import java.time.LocalDateTime;
 @Tag(name = "Announcements")
 @RequestMapping("/api/announcements")
 @RestController
-@Slf4j
 public class AnnouncementsController extends ApiController{
     @Autowired
     AnnouncementsRepository announcementsRepository;
@@ -40,7 +39,7 @@ public class AnnouncementsController extends ApiController{
     CommonsRepository commonsRepository;
 
     @Operation(summary= "List all announcements")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/all")
     public Iterable<Announcements> allAnnouncements() {
         Iterable<Announcements> announcements = announcementsRepository.findAll();
