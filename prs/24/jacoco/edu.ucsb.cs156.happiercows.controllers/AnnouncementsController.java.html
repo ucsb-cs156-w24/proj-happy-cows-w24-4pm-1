@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnouncementsController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">happycows</a> &gt; <a href="index.source.html" class="el_package">edu.ucsb.cs156.happiercows.controllers</a> &gt; <span class="el_source">AnnouncementsController.java</span></div><h1>AnnouncementsController.java</h1><pre class="source lang-java linenums">package edu.ucsb.cs156.happiercows.controllers;
+
+import edu.ucsb.cs156.happiercows.entities.Announcements;
+import edu.ucsb.cs156.happiercows.repositories.AnnouncementsRepository;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+
+import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+
+import java.time.LocalDateTime;
+
+@Tag(name = &quot;Announcements&quot;)
+@RequestMapping(&quot;/api/announcements&quot;)
+@RestController
+<span class="fc" id="L36">public class AnnouncementsController extends ApiController{</span>
+    @Autowired
+    AnnouncementsRepository announcementsRepository;
+
+    @Autowired
+    CommonsRepository commonsRepository;
+
+    @Autowired
+    ObjectMapper mapper;
+
+    @Operation(summary= &quot;List all announcements&quot;)
+    @PreAuthorize(&quot;hasAnyRole('ROLE_USER', 'ROLE_ADMIN')&quot;)
+    @GetMapping(&quot;/all&quot;)
+    public Iterable&lt;Announcements&gt; allAnnouncements() {
+<span class="fc" id="L50">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
+<span class="fc" id="L51">        return announcements;</span>
+    }
+
+    @Operation(summary= &quot;Create a new announcement&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PostMapping(&quot;/post&quot;)
+    public ResponseEntity&lt;?&gt; postAnnouncements(
+            @Parameter(name=&quot;commonsId&quot;) @RequestParam long commonsId,
+            @Parameter(name = &quot;start&quot;, description = &quot;in iso format, e.g. YYYY-mm-ddTHH:MM:SSorg/wiki/ISO_8601&quot;) @RequestParam(&quot;start&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @Parameter(name = &quot;end&quot;, description = &quot;in iso format, e.g. YYYY-mm-ddTHH:MM:SSorg/wiki/ISO_8601&quot;) @RequestParam(value = &quot;end&quot;, required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
+            @Parameter(name = &quot;announcement&quot;) @RequestParam String announcement)
+            throws JsonProcessingException {
+        
+        // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        // See: https://www.baeldung.com/spring-date-parameters
+<span class="fc bfc" id="L66" title="All 4 branches covered.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
+<span class="fc" id="L67">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
+        }
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
+<span class="fc" id="L70">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
+        }
+<span class="fc" id="L72">        Announcements newAnnouncement = Announcements.builder()</span>
+<span class="fc" id="L73">                .commonsId(commonsId)</span>
+<span class="fc" id="L74">                .start(start)</span>
+<span class="fc" id="L75">                .end(end)</span>
+<span class="fc" id="L76">                .announcement(announcement)</span>
+<span class="fc" id="L77">                .build();</span>
+
+<span class="fc" id="L79">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
+<span class="fc" id="L80">        String body = mapper.writeValueAsString(savedAnnouncement);</span>
+
+<span class="fc" id="L82">        return ResponseEntity.ok().body(body);</span>
+    }
+
+
+    @Operation(summary= &quot;Get a single announcement&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
+    @GetMapping(&quot;&quot;)
+    public Announcements getById(
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L91">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+
+<span class="fc" id="L94">        return announcements;</span>
+    }
+
+
+    @Operation(summary= &quot;Delete a announcement&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @DeleteMapping(&quot;&quot;)
+    public Object deleteAnnouncements(
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
+<span class="fc" id="L103">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L104">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+
+<span class="fc" id="L106">        announcementsRepository.delete(announcements);</span>
+<span class="fc" id="L107">        return genericMessage(&quot;Announcement with id %s deleted&quot;.formatted(id));</span>
+    }
+
+    @Operation(summary= &quot;Update a single announcements&quot;)
+    @PreAuthorize(&quot;hasRole('ROLE_ADMIN')&quot;)
+    @PutMapping(&quot;&quot;)
+    public Announcements updateAnnouncements(
+            @Parameter(name=&quot;id&quot;) @RequestParam Long id,
+            @RequestBody @Valid Announcements incoming) {
+
+<span class="fc" id="L117">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L118">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+
+<span class="fc" id="L120">        announcements.setCommonsId(incoming.getCommonsId());</span>
+<span class="fc" id="L121">        announcements.setStart(incoming.getStart());</span>
+<span class="fc" id="L122">        announcements.setEnd(incoming.getEnd());</span>
+<span class="fc" id="L123">        announcements.setAnnouncement(incoming.getAnnouncement());</span>
+
+<span class="fc" id="L125">        announcementsRepository.save(announcements);</span>
+
+<span class="fc" id="L127">        return announcements;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
