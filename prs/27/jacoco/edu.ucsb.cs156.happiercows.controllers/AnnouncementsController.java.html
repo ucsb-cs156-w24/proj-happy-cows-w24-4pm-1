@@ -2,7 +2,6 @@
 
 import edu.ucsb.cs156.happiercows.entities.Announcements;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementsRepository;
-import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +31,8 @@ import java.time.LocalDateTime;
 @Tag(name = &quot;Announcements&quot;)
 @RequestMapping(&quot;/api/announcements&quot;)
 @RestController
-<span class="nc" id="L35">@Slf4j</span>
-<span class="nc" id="L36">public class AnnouncementsController extends ApiController{</span>
+<span class="fc" id="L34">@Slf4j</span>
+<span class="fc" id="L35">public class AnnouncementsController extends ApiController{</span>
     @Autowired
     AnnouncementsRepository announcementsRepository;
 
@@ -44,8 +43,8 @@ import java.time.LocalDateTime;
     @PreAuthorize(&quot;hasRole('ROLE_USER')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Announcements&gt; allAnnouncements() {
-<span class="nc" id="L47">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
-<span class="nc" id="L48">        return announcements;</span>
+<span class="fc" id="L46">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
+<span class="fc" id="L47">        return announcements;</span>
     }
 
     @Operation(summary= &quot;Create a new announcement&quot;)
@@ -60,21 +59,21 @@ import java.time.LocalDateTime;
         
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         // See: https://www.baeldung.com/spring-date-parameters
-<span class="nc bnc" id="L63" title="All 4 branches missed.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
-<span class="nc" id="L64">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
+<span class="nc" id="L63">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
         }
-<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
-<span class="nc" id="L67">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
+<span class="nc" id="L66">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
         }
-<span class="nc" id="L69">        Announcements newAnnouncement = new Announcements();</span>
-<span class="nc" id="L70">        newAnnouncement.setCommonsId(commonsId);</span>
-<span class="nc" id="L71">        newAnnouncement.setStart(start);</span>
-<span class="nc" id="L72">        newAnnouncement.setEnd(end);</span>
-<span class="nc" id="L73">        newAnnouncement.setAnnouncement(announcement);</span>
+<span class="nc" id="L68">        Announcements newAnnouncement = new Announcements();</span>
+<span class="nc" id="L69">        newAnnouncement.setCommonsId(commonsId);</span>
+<span class="nc" id="L70">        newAnnouncement.setStart(start);</span>
+<span class="nc" id="L71">        newAnnouncement.setEnd(end);</span>
+<span class="nc" id="L72">        newAnnouncement.setAnnouncement(announcement);</span>
 
-<span class="nc" id="L75">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
+<span class="nc" id="L74">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
 
-<span class="nc" id="L77">        return ResponseEntity.ok(savedAnnouncement);</span>
+<span class="nc" id="L76">        return ResponseEntity.ok(savedAnnouncement);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
