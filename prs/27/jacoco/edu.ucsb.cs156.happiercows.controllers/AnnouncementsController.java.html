@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,19 +33,22 @@ import java.time.LocalDateTime;
 @Tag(name = &quot;Announcements&quot;)
 @RequestMapping(&quot;/api/announcements&quot;)
 @RestController
-<span class="fc" id="L35">public class AnnouncementsController extends ApiController{</span>
+<span class="fc" id="L36">public class AnnouncementsController extends ApiController{</span>
     @Autowired
     AnnouncementsRepository announcementsRepository;
 
     @Autowired
     CommonsRepository commonsRepository;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @Operation(summary= &quot;List all announcements&quot;)
     @PreAuthorize(&quot;hasAnyRole('ROLE_USER', 'ROLE_ADMIN')&quot;)
     @GetMapping(&quot;/all&quot;)
     public Iterable&lt;Announcements&gt; allAnnouncements() {
-<span class="fc" id="L46">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
-<span class="fc" id="L47">        return announcements;</span>
+<span class="fc" id="L50">        Iterable&lt;Announcements&gt; announcements = announcementsRepository.findAll();</span>
+<span class="fc" id="L51">        return announcements;</span>
     }
 
     @Operation(summary= &quot;Create a new announcement&quot;)
@@ -59,21 +63,23 @@ import java.time.LocalDateTime;
         
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         // See: https://www.baeldung.com/spring-date-parameters
-<span class="fc bfc" id="L62" title="All 4 branches covered.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
-<span class="fc" id="L63">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
+<span class="fc bfc" id="L66" title="All 4 branches covered.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
+<span class="fc" id="L67">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
         }
-<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
-<span class="fc" id="L66">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
+<span class="fc" id="L70">            return ResponseEntity.badRequest().body(&quot;Invalid commondId&quot;);</span>
         }
-<span class="fc" id="L68">        Announcements newAnnouncement = new Announcements();</span>
-<span class="fc" id="L69">        newAnnouncement.setCommonsId(commonsId);</span>
-<span class="fc" id="L70">        newAnnouncement.setStart(start);</span>
-<span class="fc" id="L71">        newAnnouncement.setEnd(end);</span>
-<span class="fc" id="L72">        newAnnouncement.setAnnouncement(announcement);</span>
+<span class="fc" id="L72">        Announcements newAnnouncement = Announcements.builder()</span>
+<span class="fc" id="L73">                .commonsId(commonsId)</span>
+<span class="fc" id="L74">                .start(start)</span>
+<span class="fc" id="L75">                .end(end)</span>
+<span class="fc" id="L76">                .announcement(announcement)</span>
+<span class="fc" id="L77">                .build();</span>
 
-<span class="fc" id="L74">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
+<span class="fc" id="L79">        Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);</span>
+<span class="fc" id="L80">        String body = mapper.writeValueAsString(savedAnnouncement);</span>
 
-<span class="fc" id="L76">        return ResponseEntity.ok(savedAnnouncement);</span>
+<span class="fc" id="L82">        return ResponseEntity.ok().body(body);</span>
     }
 
 
@@ -82,10 +88,10 @@ import java.time.LocalDateTime;
     @GetMapping(&quot;&quot;)
     public Announcements getById(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="nc" id="L85">        Announcements announcements = announcementsRepository.findById(id)</span>
-<span class="nc" id="L86">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+<span class="fc" id="L91">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L92">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
 
-<span class="nc" id="L88">        return announcements;</span>
+<span class="fc" id="L94">        return announcements;</span>
     }
 
 
@@ -94,11 +100,11 @@ import java.time.LocalDateTime;
     @DeleteMapping(&quot;&quot;)
     public Object deleteAnnouncements(
             @Parameter(name=&quot;id&quot;) @RequestParam Long id) {
-<span class="nc" id="L97">        Announcements announcements = announcementsRepository.findById(id)</span>
-<span class="nc" id="L98">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+<span class="fc" id="L103">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L104">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
 
-<span class="nc" id="L100">        announcementsRepository.delete(announcements);</span>
-<span class="nc" id="L101">        return genericMessage(&quot;Announcement with id %s deleted&quot;.formatted(id));</span>
+<span class="fc" id="L106">        announcementsRepository.delete(announcements);</span>
+<span class="fc" id="L107">        return genericMessage(&quot;Announcement with id %s deleted&quot;.formatted(id));</span>
     }
 
     @Operation(summary= &quot;Update a single announcements&quot;)
@@ -108,17 +114,17 @@ import java.time.LocalDateTime;
             @Parameter(name=&quot;id&quot;) @RequestParam Long id,
             @RequestBody @Valid Announcements incoming) {
 
-<span class="nc" id="L111">        Announcements announcements = announcementsRepository.findById(id)</span>
-<span class="nc" id="L112">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
+<span class="fc" id="L117">        Announcements announcements = announcementsRepository.findById(id)</span>
+<span class="fc" id="L118">                .orElseThrow(() -&gt; new EntityNotFoundException(Announcements.class, id));</span>
 
-<span class="nc" id="L114">        announcements.setCommonsId(incoming.getCommonsId());</span>
-<span class="nc" id="L115">        announcements.setStart(incoming.getStart());</span>
-<span class="nc" id="L116">        announcements.setEnd(incoming.getEnd());</span>
-<span class="nc" id="L117">        announcements.setAnnouncement(incoming.getAnnouncement());</span>
+<span class="fc" id="L120">        announcements.setCommonsId(incoming.getCommonsId());</span>
+<span class="fc" id="L121">        announcements.setStart(incoming.getStart());</span>
+<span class="fc" id="L122">        announcements.setEnd(incoming.getEnd());</span>
+<span class="fc" id="L123">        announcements.setAnnouncement(incoming.getAnnouncement());</span>
 
-<span class="nc" id="L119">        announcementsRepository.save(announcements);</span>
+<span class="fc" id="L125">        announcementsRepository.save(announcements);</span>
 
-<span class="nc" id="L121">        return announcements;</span>
+<span class="fc" id="L127">        return announcements;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
