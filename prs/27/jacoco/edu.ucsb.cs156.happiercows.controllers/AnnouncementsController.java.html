@@ -58,7 +58,7 @@ import java.time.LocalDateTime;
         
         // For an explanation of @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         // See: https://www.baeldung.com/spring-date-parameters
-<span class="pc bpc" id="L61" title="1 of 4 branches missed.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
+<span class="fc bfc" id="L61" title="All 4 branches covered.">        if (end != null &amp;&amp; end.isBefore(start)) {</span>
 <span class="fc" id="L62">            return ResponseEntity.badRequest().body(&quot;End date must be after start date&quot;);</span>
         }
 <span class="fc bfc" id="L64" title="All 2 branches covered.">        if (commonsRepository.findById(commonsId).isEmpty()) {</span>
