@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import edu.ucsb.cs156.happiercows.errors.EntityNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +40,9 @@ public class AnnouncementsController extends ApiController{
     @Autowired
     CommonsRepository commonsRepository;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @Operation(summary= "List all announcements")
     @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping("/all")
@@ -65,15 +69,17 @@ public class AnnouncementsController extends ApiController{
         if (commonsRepository.findById(commonsId).isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid commondId");
         }
-        Announcements newAnnouncement = new Announcements();
-        newAnnouncement.setCommonsId(commonsId);
-        newAnnouncement.setStart(start);
-        newAnnouncement.setEnd(end);
-        newAnnouncement.setAnnouncement(announcement);
+        Announcements newAnnouncement = Announcements.builder()
+                .commonsId(commonsId)
+                .start(start)
+                .end(end)
+                .announcement(announcement)
+                .build();
 
         Announcements savedAnnouncement = announcementsRepository.save(newAnnouncement);
+        String body = mapper.writeValueAsString(savedAnnouncement);
 
-        return ResponseEntity.ok(savedAnnouncement);
+        return ResponseEntity.ok().body(body);
     }
 
 
