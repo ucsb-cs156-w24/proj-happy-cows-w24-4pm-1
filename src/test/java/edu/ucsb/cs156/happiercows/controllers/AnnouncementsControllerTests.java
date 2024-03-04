@@ -83,5 +83,6 @@ public class AnnouncementsControllerTests extends ControllerTestCase {
 
         // Verify
         verify(announcementsRepository, times(1)).findAll();
+        //add chcange
     }
 }
