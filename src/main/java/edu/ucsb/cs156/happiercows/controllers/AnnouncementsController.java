@@ -2,7 +2,6 @@ package edu.ucsb.cs156.happiercows.controllers;
 
 import edu.ucsb.cs156.happiercows.entities.Announcements;
 import edu.ucsb.cs156.happiercows.repositories.AnnouncementsRepository;
-import edu.ucsb.cs156.happiercows.entities.Commons;
 import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
