@@ -22,6 +22,6 @@ const announcementsFixtures = {
             "announcement": "common Announcements test 2" 
         }
     ]
-}
+};
 
 export default announcementsFixtures;

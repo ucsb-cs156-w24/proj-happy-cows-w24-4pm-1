@@ -1,6 +1,6 @@
 import React from 'react';
 import AnnouncementsForm from "main/components/Announcements/AnnouncementsForm";
-import {announcementsFixtures} from 'fixtures/announcementsFixtures';
+import { announcementsFixtures } from 'fixtures/announcementsFixtures';
 
 export default {
     title: 'components/Announcements/AnnouncementsForm',
