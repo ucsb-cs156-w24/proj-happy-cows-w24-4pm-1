@@ -1,6 +1,5 @@
-import { cellToAxiosParamsDelete, commonsNotJoined, onDeleteSuccess } from "main/utils/announcementsUtils";
+import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/announcementsUtils";
 import mockConsole from "jest-mock-console";
-import announcementsFixtures from "fixtures/announcementsFixtures";
 
 const mockToast = jest.fn();
 jest.mock('react-toastify', () => {
