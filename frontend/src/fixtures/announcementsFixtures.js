@@ -6,7 +6,7 @@ const announcementsFixtures = {
         "end": "2012-03-05T16:00",
         "announcement": "single Announcement test" 
     },
-    commonsAnnouncements:[
+    threeAnnouncements:[
         {
             "id": 1,
             "commonsId": 1,
