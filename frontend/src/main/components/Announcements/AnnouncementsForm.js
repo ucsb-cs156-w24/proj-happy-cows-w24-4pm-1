@@ -33,7 +33,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
                         />
                     </Form.Group>
                     <Form.Group className="mb-3" >
-                        <Form.Label htmlFor="commonsId">CommonsId</Form.Label>
+                        <Form.Label htmlFor="commonsId">Commons Id</Form.Label>
                         <Form.Control
                             data-testid={testIdPrefix + "commonsId"}
                             id="commonsId"
@@ -47,7 +47,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
             )}
 
             <Form.Group className="mb-3">
-                <Form.Label htmlFor="start">StartTime (iso format)</Form.Label>
+                <Form.Label htmlFor="start">Start Time (iso format)</Form.Label>
                 <Form.Control
                     data-testid={testIdPrefix + "start"}
                     id="start"
@@ -63,7 +63,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
             </Form.Group>
 
             <Form.Group className="mb-3">
-                <Form.Label htmlFor="end">EndTime (iso format)</Form.Label>
+                <Form.Label htmlFor="end">End Time (iso format)</Form.Label>
                 <Form.Control
                     data-testid={testIdPrefix + "end"}
                     id="end"
@@ -77,7 +77,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
             </Form.Group>
 
             <Form.Group className="mb-3" >
-                <Form.Label htmlFor="announcement">Announcement</Form.Label>
+                <Form.Label htmlFor="announcement">Announcement Message</Form.Label>
                 <Form.Control
                     //as="textarea" 
                     //rows={4}
