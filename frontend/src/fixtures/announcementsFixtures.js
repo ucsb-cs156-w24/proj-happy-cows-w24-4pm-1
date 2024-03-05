@@ -1,13 +1,10 @@
 const announcementsFixtures = {
-    oneAnnouncement:
-    {
-            "announcements": {
+    oneAnnouncement: {
                 "id": 1,
                 "commonsId": 1,
                 "start": "2012-03-05T15:50",
                 "end": "2012-03-05T16:00",
                 "announcement": "single Announcement test" 
-            }
     },
     commonsAnnouncements:[
         {
