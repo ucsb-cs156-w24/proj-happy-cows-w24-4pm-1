@@ -19,36 +19,32 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
 
     return (
         <Form onSubmit={handleSubmit(submitAction)}>
-
             {initialContents && (
-                <Form.Group className="mb-3" >
-                    <Form.Label htmlFor="id">Id</Form.Label>
-                    <Form.Control
-                        data-testid={testIdPrefix + "id"}
-                        id="id"
-                        type="text"
-                        {...register("id")}
-                        value={initialContents.id}
-                        disabled
-                    />
-                </Form.Group>
+                <row>
+                    <Form.Group className="mb-3" >
+                        <Form.Label htmlFor="id">Id</Form.Label>
+                        <Form.Control
+                            data-testid={testIdPrefix + "id"}
+                            id="id"
+                            type="text"
+                            {...register("id")}
+                            value={initialContents.id}
+                            disabled
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3" >
+                        <Form.Label htmlFor="commonsId">CommonsId</Form.Label>
+                        <Form.Control
+                            data-testid={testIdPrefix + "commonsId"}
+                            id="commonsId"
+                            type="text"
+                            {...register("commonsId")}
+                            value={initialContents.commonsId}
+                            disabled
+                        />
+                    </Form.Group>
+                </row>
             )}
-
-            <Form.Group className="mb-3" >
-                <Form.Label htmlFor="commonsId">CommonsId</Form.Label>
-                <Form.Control
-                    data-testid={testIdPrefix + "commonsId"}
-                    id="commonsId"
-                    type="text"
-                    isInvalid={Boolean(errors.commonsId)}
-                    {...register("commonsId", {
-                        required: "CommonsId is required."
-                    })}
-                />
-                <Form.Control.Feedback type="invalid">;ul.
-                    {errors.commonsId?.message}
-                </Form.Control.Feedback>
-            </Form.Group>
 
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="start">StartTime (iso format)</Form.Label>
