@@ -14,7 +14,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 
-describe(" tests", () => {
+describe("AnnouncementsForm tests", () => {
     const queryClient = new QueryClient();
 
     const expectedHeaders = ["Announcement Message"];
