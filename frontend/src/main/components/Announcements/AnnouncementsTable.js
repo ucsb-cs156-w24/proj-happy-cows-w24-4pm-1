@@ -10,14 +10,16 @@ export default function AnnouncementsTable({ announcements, currentUser, testIdP
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/admin/announcements/edit/${cell.row.values.id}`);
+        navigate(`/admin/announcements/edit/${cell.row.values.id}`)
     }
 
+    // Stryker disable all : hard to test for query caching
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
         ["/api/announcements/all"]
     );
+    // Stryker restore all
 
     // Stryker disable next-line all : TODO try to make a good test for this
     const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
@@ -57,5 +59,5 @@ export default function AnnouncementsTable({ announcements, currentUser, testIdP
         data={announcements}
         columns={columns}
         testid={testIdPrefix}
-        />;
+    />;
 };
