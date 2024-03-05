@@ -24,4 +24,4 @@ const announcementsFixtures = {
     ],
 }
 
-export { announcementsFixtures};
+export {announcementsFixtures};
