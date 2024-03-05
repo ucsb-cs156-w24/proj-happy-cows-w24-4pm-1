@@ -58,6 +58,7 @@ describe(" tests", () => {
         expect(await screen.findByTestId(`${testId}-commonsId`)).toBeInTheDocument();
         expect(screen.getByText(`Commons Id`)).toBeInTheDocument();
         expect(screen.getByTestId(/AnnouncementsForm-id/)).toHaveValue("1");
+        expect(screen.getByTestId(/AnnouncementsForm-start/)).toHaveValue("2012-03-05T15:50");
     });
 
     test("Correct Error messsages on missing input", async () => {
