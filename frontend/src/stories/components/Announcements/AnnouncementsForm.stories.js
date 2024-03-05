@@ -20,17 +20,17 @@ Create.args = {
     submitAction: (data) => {
         console.log("Submit was clicked with data: ", data); 
         window.alert("Submit was clicked with data: " + JSON.stringify(data));
-   }
+    }
 
 };
 
 export const Update = Template.bind({});
 
 Update.args = {
-    initialAnnouncements: announcementsFixtures.oneAnnouncement[0].announcements,
+    initialAnnouncements: announcementsFixtures.oneAnnouncement,
     buttonLabel: "Update",
     submitAction: (data) => {
         console.log("Submit was clicked with data: ", data); 
         window.alert("Submit was clicked with data: " + JSON.stringify(data));
-   }
+    }
 };
