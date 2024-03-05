@@ -15,8 +15,8 @@ jest.mock('react-router-dom', () => ({
 describe("HelpRequestTable tests", () => {
     const queryClient = new QueryClient();
   
-    const expectedHeaders = ["Id", "CommonsId", "Start", "End", "Announcement"];
-    const expectedFields = ["id", "commonsId", "start", "end", "announcement"];
+    const expectedHeaders = ["Id", "Start", "End", "Announcement"];
+    const expectedFields = ["id", "start", "end", "announcement"];
     const testId = "AnnouncementsTable";
 
     test("renders empty table correctly", () => {
@@ -70,8 +70,8 @@ describe("HelpRequestTable tests", () => {
         });
     
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-commonsId`)).toHaveTextContent("1");
-    
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-announcement`)).toHaveTextContent("common Announcements test 1");
+        
         expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
         expect(screen.getByTestId(`${testId}-cell-row-1-col-announcement`)).toHaveTextContent("common Announcements test 2");
     
@@ -110,7 +110,7 @@ describe("HelpRequestTable tests", () => {
         });
     
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-commonsId`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-announcement`)).toHaveTextContent("common Announcements test 1");
     
         expect(screen.getByTestId(`${testId}-cell-row-1-col-id`)).toHaveTextContent("2");
         expect(screen.getByTestId(`${testId}-cell-row-1-col-announcement`)).toHaveTextContent("common Announcements test 2");
@@ -133,7 +133,7 @@ describe("HelpRequestTable tests", () => {
 
         // assert - check that the expected content is rendered
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-commonsId`)).toHaveTextContent("1");
+        expect(screen.getByTestId(`${testId}-cell-row-0-col-announcement`)).toHaveTextContent("common Announcements test 1");
     
         const editButton = screen.getByTestId(`${testId}-cell-row-0-col-Edit-button`);
         expect(editButton).toBeInTheDocument();
@@ -161,7 +161,6 @@ describe("HelpRequestTable tests", () => {
 
         // assert - check that the expected content is rendered
         expect(screen.getByTestId(`${testId}-cell-row-0-col-id`)).toHaveTextContent("1");
-        expect(screen.getByTestId(`${testId}-cell-row-0-col-commonsId`)).toHaveTextContent("1");
     
         const deleteButton = screen.getByTestId(`${testId}-cell-row-0-col-Delete-button`);
         expect(deleteButton).toBeInTheDocument();

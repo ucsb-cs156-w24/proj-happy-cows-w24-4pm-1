@@ -32,10 +32,6 @@ export default function AnnouncementsTable({ announcements, currentUser, testIdP
 
         },
         {
-            Header:'CommonsId',
-            accessor: 'commonsId',
-        },
-        {
             Header: 'Start',
             accessor: 'start',
         },
