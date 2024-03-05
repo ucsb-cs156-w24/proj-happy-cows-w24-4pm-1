@@ -33,6 +33,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
                     />
                 </Form.Group>
             )}
+
             <Form.Group className="mb-3" >
                 <Form.Label htmlFor="commonsId">CommonsId</Form.Label>
                 <Form.Control
@@ -48,6 +49,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
                     {errors.commonsId?.message}
                 </Form.Control.Feedback>
             </Form.Group>
+
             <Form.Group className="mb-3">
                 <Form.Label htmlFor="start">StartTime (iso format)</Form.Label>
                 <Form.Control
@@ -112,7 +114,7 @@ function AnnouncementsForm({initialContents, submitAction, buttonLabel = "Create
             </Button>
         </Form>
 
-    )
+    );
 
 }
 export default AnnouncementsForm;
