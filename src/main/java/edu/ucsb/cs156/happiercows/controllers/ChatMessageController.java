@@ -56,7 +56,7 @@ public class ChatMessageController extends ApiController{
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
-            boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(false)) : (true); 
+            boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(true)) : (true); 
 
             if (flag) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

@@ -52,6 +52,7 @@ public class AverageCowHealthServiceTests {
         .startingBalance(300)
         .startingDate(LocalDateTime.parse("2022-03-05T15:50:10"))
         .showLeaderboard(true)
+	.showChat(true)
         .carryingCapacity(100)
         .degradationRate(0.01)
         .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)

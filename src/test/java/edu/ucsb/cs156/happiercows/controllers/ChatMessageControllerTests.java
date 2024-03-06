@@ -82,7 +82,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
-        UserCommons userCommons = UserCommons.builder().build();
+        UserCommons userCommons = UserCommons.builder().commons(Commons.builder().showChat(true).build()).build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
 
