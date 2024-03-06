@@ -1,8 +1,9 @@
 import React from 'react';
 
 import AnnouncementsTable from "main/components/Announcements/AnnouncementsTable";
-import announcementsFixtures from 'fixtures/announcementsFixtures';
+import {announcementsFixtures} from 'fixtures/announcementsFixtures';
 import { currentUserFixtures } from 'fixtures/currentUserFixtures';
+import { rest } from "msw";
 
 export default {
     title: 'components/Announcements/AnnouncementsTable',
@@ -21,30 +22,25 @@ Empty.args = {
     announcements: []
 };
 
-export const commonsAnnouncements = Template.bind({});
+export const ThreeAnnouncementsOrdinaryUser = Template.bind({});
 
-commonsAnnouncements.args = {
-    announcements: announcementsFixtures.commonsAnnouncements
+ThreeAnnouncementsOrdinaryUser.args = {
+    announcements: announcementsFixtures.threeAnnouncements,
+    currentUser: currentUserFixtures.userOnly
 };
 
-export const oneAnnouncement = Template.bind({});
+export const ThreeAnnouncementsAdminUser = Template.bind({});
 
-oneAnnouncement.args = {
-    announcements: announcementsFixtures.oneAnnouncement
+ThreeAnnouncementsAdminUser.args = {
+    announcements: announcementsFixtures.threeAnnouncements,
+    currentUser: currentUserFixtures.adminUser
 }
 
-export const oneAnnouncementAdmin = Template.bind({});
-
-oneAnnouncementAdmin.args = {
-    announcements: announcementsFixtures.oneAnnouncement,
-    currentUser: currentUserFixtures.adminUser
+ThreeAnnouncementsAdminUser.parameters = {
+    msw: [
+        rest.delete('/api/announcements', (req, res, ctx) => {
+            window.alert("DELETE: " + JSON.stringify(req.url));
+            return res(ctx.status(200),ctx.json({}));
+        }),
+    ]
 };
-
-export const commonsAnnouncementsAdmin = Template.bind({});
-
-commonsAnnouncementsAdmin.args = {
-    announcements: announcementsFixtures.commonsAnnouncements,
-    currentUser: currentUserFixtures.adminUser
-};
-
-

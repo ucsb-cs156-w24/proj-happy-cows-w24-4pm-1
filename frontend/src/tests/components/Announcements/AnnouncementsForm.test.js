@@ -1,8 +1,8 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import AnnouncementsForm from "main/components/Announcements/AnnouncementsForm";
-// Assuming you have a similar fixtures setup for organizations
+import { announcementsFixtures } from "fixtures/announcementsFixtures";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
@@ -13,9 +13,12 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedNavigate
 }));
 
+
 describe("AnnouncementsForm tests", () => {
     const queryClient = new QueryClient();
-    const testIdPrefix = "announcementsForm";
+
+    const expectedHeaders = ["Announcement Message"];
+    const testId = "AnnouncementsForm";
 
     test("renders correctly with no initialContents", async () => {
         render(
@@ -25,48 +28,110 @@ describe("AnnouncementsForm tests", () => {
                 </Router>
             </QueryClientProvider>
         );
-    
+
         expect(await screen.findByText(/Create/)).toBeInTheDocument();
-        expect(screen.getByTestId(`${testIdPrefix}-start`)).toBeInTheDocument();
-        expect(screen.getByTestId(`${testIdPrefix}-end`)).toBeInTheDocument();
-        expect(screen.getByTestId(`${testIdPrefix}-announcement`)).toBeInTheDocument();
+
+        expectedHeaders.forEach((headerText) => {
+            const header = screen.getByText(headerText);
+            expect(header).toBeInTheDocument();
+        });
+
     });
-    
+
     test("renders correctly when passing in initialContents", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementsForm initialAnnouncements={{"id": 1,"commonsId": 1,"start": "2012-03-05T15:50", "end": "2012-03-05T16:00", "announcement": "single Announcement test"}} />
+                    <AnnouncementsForm initialContents={announcementsFixtures.oneAnnouncement} />
                 </Router>
             </QueryClientProvider>
         );
 
-        // Verify that the form fields are populated with initialContents
-        expect(screen.getByTestId(`${testIdPrefix}-start`)).toHaveValue("2012-03-05T15:50");
-        expect(screen.getByTestId(`${testIdPrefix}-end`)).toHaveValue("2012-03-05T16:00");
-        expect(screen.getByTestId(`${testIdPrefix}-announcement`)).toHaveValue("single Announcement test");
+        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+
+        expectedHeaders.forEach((headerText) => {
+            const header = screen.getByText(headerText);
+            expect(header).toBeInTheDocument();
+        });
+        expect(await screen.findByTestId(`${testId}-id`)).toBeInTheDocument();
+        expect(screen.getByText(`Id`)).toBeInTheDocument();
+        expect(await screen.findByTestId(`${testId}-commonsId`)).toBeInTheDocument();
+        expect(screen.getByText(`Commons Id`)).toBeInTheDocument();
+        expect(screen.getByTestId(/AnnouncementsForm-id/)).toHaveValue("1");
+        expect(screen.getByTestId(/AnnouncementsForm-start/)).toHaveValue("2012-03-05T15:50");
     });
 
+    test("Correct Error messsages on missing input", async () => {
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementsForm />
+                </Router>
+            </QueryClientProvider>
+        );
+        await screen.findByTestId("AnnouncementsForm-submit");
+        const submitButton = screen.getByTestId("AnnouncementsForm-submit");
+
+        fireEvent.click(submitButton);
+        await screen.findByText(/Start is required./);
+        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
+    });
+
+    test("that navigate(-1) is called when Cancel is clicked", async () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Router>
+                    <AnnouncementsForm />
+                </Router>
+            </QueryClientProvider>
+        );
+        expect(await screen.findByTestId(`${testId}-cancel`)).toBeInTheDocument();
+        const cancelButton = screen.getByTestId(`${testId}-cancel`);
+
+        fireEvent.click(cancelButton);
+
+        await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith(-1));
+    });
 
     test("that the correct validations are performed", async () => {
         render(
             <QueryClientProvider client={queryClient}>
                 <Router>
-                    <AnnouncementsForm/>
+                    <AnnouncementsForm />
                 </Router>
             </QueryClientProvider>
         );
 
-        const submitButton = screen.getByTestId(`${testIdPrefix}-submit`);
+        expect(await screen.findByText(/Create/)).toBeInTheDocument();
+        const submitButton = screen.getByText(/Create/);
         fireEvent.click(submitButton);
 
-
-        const start = await screen.findByText(/start is required/);
-        const announcement = await screen.findByText(/announcement is required/);
-
-        expect(start).toBeInTheDocument();
-        expect(announcement).toBeInTheDocument();
-
+        await screen.findByText(/Start is required./);
+        expect(screen.getByText(/Announcement is required./)).toBeInTheDocument();
     });
 
+    test("No Error messsages on good input", async () => {
+
+        const mockSubmitAction = jest.fn();
+
+
+        render(
+            <Router  >
+                <AnnouncementsForm submitAction={mockSubmitAction} />
+            </Router>
+        );
+        await screen.findByTestId("AnnouncementsForm-start");
+
+        const startField = screen.getByTestId("AnnouncementsForm-start");
+        const endField = screen.getByTestId("AnnouncementsForm-end");
+        const announcementField = screen.getByTestId("AnnouncementsForm-announcement");
+        const submitButton = screen.getByTestId("AnnouncementsForm-submit");
+        fireEvent.change(announcementField, { target: { value: 'explain' } });
+        fireEvent.change(startField, { target: { value: '2022-01-02T12:00:00' } });
+        fireEvent.change(endField, { target: { value: '2022-01-05T12:00:00' } });
+        fireEvent.click(submitButton);
+
+        await waitFor(() => expect(mockSubmitAction).toHaveBeenCalled());
+    });
 });

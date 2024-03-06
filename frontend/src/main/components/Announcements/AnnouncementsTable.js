@@ -1,100 +1,59 @@
-import React, {useState} from "react";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React from "react";
 import OurTable, {ButtonColumn} from "main/components/OurTable";
 import { useBackendMutation } from "main/utils/useBackend";
 import { cellToAxiosParamsDelete, onDeleteSuccess } from "main/utils/announcementsUtils"
 import { useNavigate, } from "react-router-dom";
 import { hasRole } from "main/utils/currentUser";
 
-export default function AnnouncementsTable({ announcements, currentUser }) {
-
-    const [showModal, setShowModal] = useState(false);
-    const [cellToDelete, setCellToDelete] = useState(null);
+export default function AnnouncementsTable({ announcements, currentUser, testIdPrefix = "AnnouncementsTable"}) {
 
     const navigate = useNavigate();
 
     const editCallback = (cell) => {
-        navigate(`/admin/editannouncements/${cell.row.values["announcements.id"]}`);
+        navigate(`/admin/announcements/edit/${cell.row.values.id}`)
     }
 
+    // Stryker disable all : hard to test for query caching
     const deleteMutation = useBackendMutation(
         cellToAxiosParamsDelete,
         { onSuccess: onDeleteSuccess },
         ["/api/announcements/all"]
     );
+    // Stryker restore all
 
-    const deleteCallback = async (cell) => {
-        setCellToDelete(cell);
-        setShowModal(true);
-    }
-
-    const confirmDelete = async (cell) => {
-        deleteMutation.mutate(cell);
-        setShowModal(false);
-    };
+    // Stryker disable next-line all : TODO try to make a good test for this
+    const deleteCallback = async (cell) => { deleteMutation.mutate(cell); }
 
 
     const columns = [
         {
-            Header: 'Announcement Id',
-            accessor: 'announcements.id', 
+            Header: 'Id',
+            accessor: 'id', 
 
         },
         {
-            Header:'Commons Id',
-            accessor: 'announcements.commonsId',
-        },
-        {
             Header: 'Start',
-            accessor: 'announcements.start',
+            accessor: 'start',
         },
         {
             Header: 'End',
-            accessor: 'announcements.end',
+            accessor: 'end',
         },
         {
             Header: 'Announcement',
-            accessor: 'announcements.announcement',
+            accessor: 'announcement',
         }
 
     ];
 
-    const testid = "AnnouncementsTable";
+    if (hasRole(currentUser, "ROLE_ADMIN")) {
+        columns.push(ButtonColumn("Edit", "primary", editCallback, testIdPrefix));
+        columns.push(ButtonColumn("Delete", "danger", deleteCallback, testIdPrefix));
+    }
 
-    const columnsIfAdmin = [
-        ...columns,
-        ButtonColumn("Edit", "primary", editCallback, testid),
-        ButtonColumn("Delete", "danger", deleteCallback, testid),
-    ];
-
-    const columnsToDisplay = hasRole(currentUser,"ROLE_ADMIN") ? columnsIfAdmin : columns;
-
-    const announcementsModal = (
-        <Modal data-testid="AnnouncementsTable-Modal" show={showModal} onHide={() => setShowModal(false)}>
-            <Modal.Header closeButton>
-                <Modal.Title>Confirm Deletion</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                Are you sure you want to delete this announcements?            
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" data-testid="AnnouncementsTable-Modal-Cancel" onClick={() => setShowModal(false)}>
-                    Keep this Announcement
-                </Button>
-                <Button variant="danger" data-testid="AnnouncementsTable-Modal-Delete" onClick={() => confirmDelete(cellToDelete)}>
-                    Permanently Delete
-                </Button>
-            </Modal.Footer>
-        </Modal> );
-
-    return (
-    <>
-        <OurTable
-            data={announcements}
-            columns={columnsToDisplay}
-            testid={testid}
-        />
-        {hasRole(currentUser,"ROLE_ADMIN") && announcementsModal}
-    </>);
+    return <OurTable
+        data={announcements}
+        columns={columns}
+        testid={testIdPrefix}
+    />;
 };
