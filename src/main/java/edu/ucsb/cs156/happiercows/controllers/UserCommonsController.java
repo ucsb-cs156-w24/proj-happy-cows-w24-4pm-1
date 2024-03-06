@@ -85,9 +85,14 @@ public class UserCommonsController extends ApiController {
             () -> new EntityNotFoundException(UserCommons.class, "commonsId", commonsId, "userId", userId));
 
         if(userCommons.getTotalWealth() >= (commons.getCowPrice() * numCows)){
-          userCommons.setTotalWealth(userCommons.getTotalWealth() - (commons.getCowPrice() * numCows));
-          userCommons.setNumOfCows(userCommons.getNumOfCows() + numCows);
-          userCommons.setCowsBought(userCommons.getCowsBought() + numCows);
+          if(numCows > 0){
+            userCommons.setTotalWealth(userCommons.getTotalWealth() - (commons.getCowPrice() * numCows));
+            userCommons.setNumOfCows(userCommons.getNumOfCows() + numCows);
+            userCommons.setCowsBought(userCommons.getCowsBought() + numCows);
+          }
+          else {
+            throw new NotEnoughMoneyException("You cannot buy negative cows!");
+          }
         }
         else{
           throw new NotEnoughMoneyException("You need more money!");
@@ -115,10 +120,15 @@ public class UserCommonsController extends ApiController {
 
 
         if(userCommons.getNumOfCows() >= numCows ){
-          double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
-          userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
-          userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
-          userCommons.setCowsSold(userCommons.getCowsSold() + numCows);
+          if(numCows > 0){
+            double cowValue = commons.getCowPrice() * userCommons.getCowHealth() / 100;
+            userCommons.setTotalWealth(userCommons.getTotalWealth() + (cowValue * numCows));
+            userCommons.setNumOfCows(userCommons.getNumOfCows() - numCows);
+            userCommons.setCowsSold(userCommons.getCowsSold() + numCows);
+          }
+          else{
+            throw new NoCowsException("You cannot sell negative cows!");
+          }
         }
         else{
           throw new NoCowsException("You do not have enough cows to sell!");
