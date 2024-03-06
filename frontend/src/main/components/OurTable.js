@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useTable, useSortBy } from 'react-table'
 import { Table, Button } from "react-bootstrap";
 import Plaintext from "main/components/Utils/Plaintext";
@@ -13,6 +13,8 @@ var tableStyle = {
 };
 // Stryker restore all
 export default function OurTable({ columns, data, testid = "testid", ...rest }) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10;
 
   const {
     getTableProps,
@@ -28,49 +30,88 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
     })
   }, useSortBy)
 
-  return (
-    <Table style={tableStyle} {...getTableProps()} striped bordered hover >
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th
-                {...column.getHeaderProps(column.getSortByToggleProps())}
-                data-testid={`${testid}-header-${column.id}`}
-              >
-                {column.render('Header')}
-                <span data-testid={`${testid}-header-${column.id}-sort-carets`}>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? ' 🔽'
-                      : ' 🔼'
-                    : ''}
-                </span>
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map(row => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell, _index) => {
-                return (
-                  <td
-                    {...cell.getCellProps()}
-                    data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
-                  >
-                    {cell.render('Cell')}
-                  </td>
-                )
-              })}
+  const pageCount = Math.ceil(data.length / pageSize);
+  const nextPage = () => {
+    setCurrentPage(currentPage => Math.min(currentPage + 1, pageCount - 1));
+  };
+  const prevPage = () => {
+    setCurrentPage(currentPage => Math.max(currentPage - 1, 0));
+  };
+  const gotoPage = (pageIndex) => {
+    setCurrentPage(Math.min(Math.max(pageIndex, 0), pageCount - 1));
+  };
+
+    return (
+    <div>
+      <Table style={tableStyle} {...getTableProps()} striped bordered hover >
+        <thead>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                <th
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                  data-testid={`${testid}-header-${column.id}`}
+                >
+                  {column.render('Header')}
+                  <span data-testid={`${testid}-header-${column.id}-sort-carets`}>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ''}
+                  </span>
+                </th>
+              ))}
             </tr>
-          )
-        })}
-      </tbody>
-    </Table>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows
+            .slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+            .map(row => {
+            prepareRow(row)
+            return (
+              <tr {...row.getRowProps()}>
+                {row.cells.map((cell, _index) => {
+                  return (
+                    <td
+                      {...cell.getCellProps()}
+                      data-testid={`${testid}-cell-row-${cell.row.index}-col-${cell.column.id}`}
+                    >
+                      {cell.render('Cell')}
+                    </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+      </Table>
+      <div>
+        <button onClick={() => prevPage()} disabled={currentPage === 0}>Previous</button>
+        <button onClick={() => nextPage()} disabled={currentPage >= pageCount - 1}>Next</button>
+        <span>
+          Page{' '}
+          <strong>
+            {currentPage + 1} of {pageCount}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={currentPage + 1}
+            onChange={e => {
+              const pageIndex = e.target.value ? Number(e.target.value) -  1 : 0;
+              gotoPage(pageIndex);
+            }}
+            // Stryker disable all
+            style={{ width: '50px' }}
+            // Stryker restore all
+          />
+        </span>
+      </div>
+    </div>
   )
 }
 
