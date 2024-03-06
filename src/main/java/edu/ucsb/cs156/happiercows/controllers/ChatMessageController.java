@@ -56,8 +56,9 @@ public class ChatMessageController extends ApiController{
             User user = getCurrentUser().getUser();
             Long userId = user.getId();
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+            boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(false)) : (true); 
 
-            if (!userCommonsLookup.isPresent()) {
+            if (flag) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
@@ -107,8 +108,9 @@ public class ChatMessageController extends ApiController{
         if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
             log.info("User is not an admin");
             Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);
+	    boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(false)) : (true);
 
-            if (!userCommonsLookup.isPresent()) {
+            if (flag) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         }
