@@ -396,6 +396,31 @@ public class UserCommonsControllerTests extends ControllerTestCase {
         assertEquals(expectedJson, jsonResponse);
     }
 
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void test_BuyCow_cant_buy_negative_cows() throws Exception {
+
+        // arrange
+        testCommons.setCowPrice(100);
+
+        UserCommons origUserCommons = getTestUserCommons();
+        origUserCommons.setCowsBought(1);
+        origUserCommons.setTotalWealth(100);
+
+        when(userCommonsRepository.findByCommonsIdAndUserId(eq(1L), eq(1L))).thenReturn(Optional.of(origUserCommons));
+        when(commonsRepository.findById(eq(1L))).thenReturn(Optional.of(testCommons));
+
+        // act
+        MvcResult response = mockMvc.perform(put("/api/usercommons/buy?commonsId=1&numCows=0")
+                        .with(csrf()))
+                .andExpect(status().is(400)).andReturn();
+
+        // assert
+        String expectedString = "{\"message\":\"You cannot buy negative cows!\",\"type\":\"NotEnoughMoneyException\"}";
+        Map<String, Object> expectedJson = mapper.readValue(expectedString, Map.class);
+        Map<String, Object> jsonResponse = responseToJson(response);
+        assertEquals(expectedJson, jsonResponse);
+    }
 
     @WithMockUser(roles = {"USER"})
     @Test
