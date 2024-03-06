@@ -56,7 +56,7 @@ import java.util.Optional;
 <span class="fc" id="L56">            User user = getCurrentUser().getUser();</span>
 <span class="fc" id="L57">            Long userId = user.getId();</span>
 <span class="fc" id="L58">            Optional&lt;UserCommons&gt; userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId);</span>
-<span class="pc bpc" id="L59" title="3 of 6 branches missed.">            boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(false)) : (true); </span>
+<span class="pc bpc" id="L59" title="2 of 6 branches missed.">            boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(true)) : (true); </span>
 
 <span class="fc bfc" id="L61" title="All 2 branches covered.">            if (flag) {</span>
 <span class="fc" id="L62">                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();</span>

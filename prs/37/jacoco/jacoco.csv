@@ -2,7 +2,7 @@ GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoService,0,3,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.services,CurrentUserService,0,10,0,2,0,2,0,3,0,2
 happycows,edu.ucsb.cs156.happiercows.services,CommonsPlusBuilderService,0,65,0,0,0,13,0,4,0,4
-happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,152,0,2,0,39,0,6,0,5
+happycows,edu.ucsb.cs156.happiercows.services,ReportService,0,155,0,2,0,40,0,6,0,5
 happycows,edu.ucsb.cs156.happiercows.services,SystemInfoServiceImpl,0,30,0,0,0,10,0,3,0,3
 happycows,edu.ucsb.cs156.happiercows.services,CommonStatsService,0,56,0,0,0,14,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.services,GrantedAuthoritiesService,0,21,0,0,0,7,0,3,0,3
@@ -43,8 +43,8 @@ happycows,edu.ucsb.cs156.happiercows.entities,UserCommons,0,15,0,0,0,5,0,4,0,4
 happycows,edu.ucsb.cs156.happiercows.entities,Commons,0,16,0,4,0,4,0,3,0,1
 happycows,edu.ucsb.cs156.happiercows.entities,User,0,16,0,0,0,1,0,1,0,1
 happycows,edu.ucsb.cs156.happiercows.controllers,UserCommonsController,0,273,0,8,0,50,0,16,0,12
-happycows,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,587,0,38,0,134,0,37,0,18
-happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,12,254,4,22,0,49,3,20,0,10
+happycows,edu.ucsb.cs156.happiercows.controllers,CommonsController,0,600,0,38,0,136,0,37,0,18
+happycows,edu.ucsb.cs156.happiercows.controllers,ChatMessageController,6,260,3,23,0,49,3,20,0,10
 happycows,edu.ucsb.cs156.happiercows.controllers,JobsController,0,146,0,8,0,30,0,16,0,12
 happycows,edu.ucsb.cs156.happiercows.controllers,ProfitsController,0,136,0,0,0,22,0,7,0,7
 happycows,edu.ucsb.cs156.happiercows.controllers,UserInfoController,0,24,0,0,0,7,0,3,0,3

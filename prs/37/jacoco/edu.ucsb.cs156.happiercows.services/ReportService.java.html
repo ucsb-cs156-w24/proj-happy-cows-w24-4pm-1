@@ -52,35 +52,36 @@ import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 <span class="fc" id="L52">                .milkPrice(commons.getMilkPrice())</span>
 <span class="fc" id="L53">                .startingBalance(commons.getStartingBalance())</span>
 <span class="fc" id="L54">                .startingDate(commons.getStartingDate())</span>
-<span class="fc" id="L55">                .showLeaderboard(commons.isShowLeaderboard())</span>
-<span class="fc" id="L56">                .carryingCapacity(commons.getCarryingCapacity())</span>
-<span class="fc" id="L57">                .degradationRate(commons.getDegradationRate())</span>
-<span class="fc" id="L58">                .belowCapacityHealthUpdateStrategy(commons.getBelowCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L59">                .aboveCapacityHealthUpdateStrategy(commons.getAboveCapacityHealthUpdateStrategy())</span>
-<span class="fc" id="L60">                .numUsers(commonsRepository.getNumUsers(commonsId).orElse(0))</span>
-<span class="fc" id="L61">                .numCows(commonsRepository.getNumCows(commonsId).orElse(0))</span>
+<span class="fc" id="L55">                .showLeaderboard(commons.isShowLeaderboard()) </span>
+<span class="fc" id="L56">		.showChat(commons.isShowChat())</span>
+<span class="fc" id="L57">                .carryingCapacity(commons.getCarryingCapacity())</span>
+<span class="fc" id="L58">                .degradationRate(commons.getDegradationRate())</span>
+<span class="fc" id="L59">                .belowCapacityHealthUpdateStrategy(commons.getBelowCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L60">                .aboveCapacityHealthUpdateStrategy(commons.getAboveCapacityHealthUpdateStrategy())</span>
+<span class="fc" id="L61">                .numUsers(commonsRepository.getNumUsers(commonsId).orElse(0))</span>
+<span class="fc" id="L62">                .numCows(commonsRepository.getNumCows(commonsId).orElse(0))</span>
 
-<span class="fc" id="L63">                .build();</span>
+<span class="fc" id="L64">                .build();</span>
 
-<span class="fc" id="L65">        reportRepository.save(report);</span>
-<span class="fc" id="L66">        return report;</span>
+<span class="fc" id="L66">        reportRepository.save(report);</span>
+<span class="fc" id="L67">        return report;</span>
     }
 
     public ReportLine createAndSaveReportLine(Report report, UserCommons userCommons) {
-<span class="fc" id="L70">        ReportLine reportLine = ReportLine.builder()</span>
-<span class="fc" id="L71">                .reportId(report.getId())</span>
-<span class="fc" id="L72">                .userId(userCommons.getUser().getId())</span>
-<span class="fc" id="L73">                .username(userCommons.getUsername())</span>
-<span class="fc" id="L74">                .totalWealth(userCommons.getTotalWealth())</span>
-<span class="fc" id="L75">                .numOfCows(userCommons.getNumOfCows())</span>
-<span class="fc" id="L76">                .avgCowHealth(userCommons.getCowHealth())</span>
-<span class="fc" id="L77">                .cowsBought(userCommons.getCowsBought())</span>
-<span class="fc" id="L78">                .cowsSold(userCommons.getCowsSold())</span>
-<span class="fc" id="L79">                .cowDeaths(userCommons.getCowDeaths())</span>
-<span class="fc" id="L80">                .build();</span>
+<span class="fc" id="L71">        ReportLine reportLine = ReportLine.builder()</span>
+<span class="fc" id="L72">                .reportId(report.getId())</span>
+<span class="fc" id="L73">                .userId(userCommons.getUser().getId())</span>
+<span class="fc" id="L74">                .username(userCommons.getUsername())</span>
+<span class="fc" id="L75">                .totalWealth(userCommons.getTotalWealth())</span>
+<span class="fc" id="L76">                .numOfCows(userCommons.getNumOfCows())</span>
+<span class="fc" id="L77">                .avgCowHealth(userCommons.getCowHealth())</span>
+<span class="fc" id="L78">                .cowsBought(userCommons.getCowsBought())</span>
+<span class="fc" id="L79">                .cowsSold(userCommons.getCowsSold())</span>
+<span class="fc" id="L80">                .cowDeaths(userCommons.getCowDeaths())</span>
+<span class="fc" id="L81">                .build();</span>
 
-<span class="fc" id="L82">        reportLineRepository.save(reportLine);</span>
-<span class="fc" id="L83">        return reportLine;</span>
+<span class="fc" id="L83">        reportLineRepository.save(reportLine);</span>
+<span class="fc" id="L84">        return reportLine;</span>
     }
 
 }
