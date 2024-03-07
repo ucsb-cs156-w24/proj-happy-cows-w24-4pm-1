@@ -161,6 +161,9 @@ describe("OurTable tests", () => {
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);
 
+        const nextiButton = screen.getByText("Next");
+        expect(nextiButton).toBeDisabled();
+
         const col1Row10 = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10).toHaveTextContent("holy moly");
 
