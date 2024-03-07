@@ -138,16 +138,21 @@ public class ChatMessageController extends ApiController{
 
         // Try to get the chat message
         Optional<ChatMessage> chatMessageLookup = chatMessageRepository.findById(chatMessageId);
+	
         if (!chatMessageLookup.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
+
         ChatMessage chatMessage = chatMessageLookup.get();
 
         User user = getCurrentUser().getUser();
         Long userId = user.getId();
 
-        // Check if the user is the author of the message
-        if (chatMessage.getUserId() != userId) {
+        Optional<UserCommons> userCommonsLookup = userCommonsRepository.findByCommonsIdAndUserId(chatMessage.getCommonsId(), userId);
+        boolean flag = (userCommonsLookup.isPresent()) ? ((userCommonsLookup.get().getCommons() != null)?(!userCommonsLookup.get().getCommons().isShowChat()):(true)) : (true); 
+
+        // Check if the user is the author of the message or that chat is disabled
+        if (chatMessage.getUserId() != userId || flag) {
             // Check if the user is an admin
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (!auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))){
