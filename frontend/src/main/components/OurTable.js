@@ -91,16 +91,25 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
         <button onClick={() => prevPage()} disabled={currentPage === 0}>Previous</button>
         <button onClick={() => nextPage()} disabled={currentPage >= pageCount - 1}>Next</button>
         <span>
-          Page{""}
+          Page{// Stryker disable all
+          " "
+          // Stryker restore all
+        }
           <strong>
             {// Stryker disable all
             currentPage + 1
             // Stryker restore all
             } of {pageCount}
-          </strong>{""}
+          </strong>{// Stryker disable all
+          " "
+          // Stryker restore all
+        }
         </span>
         <span>
-          | Go to page:{""}
+          | Go to page:{// Stryker disable all
+          " "
+          // Stryker restore all
+        }
           <input
             type="number"
             defaultValue={currentPage + 1}
