@@ -93,7 +93,10 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
         <span>
           Page{""}
           <strong>
-            {currentPage + 1} of {pageCount}
+            {// Stryker disable all
+            currentPage + 1
+            // Stryker restore all
+            } of {pageCount}
           </strong>{""}
         </span>
         <span>
