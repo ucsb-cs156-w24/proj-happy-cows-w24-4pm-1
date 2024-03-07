@@ -153,8 +153,11 @@ describe("OurTable tests", () => {
         const col1Row10BeforeNext = screen.queryByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10BeforeNext).toBeNull();
 
-        // After Next, 11th entry should show
+        //prev should be unvailable
+        const previButton = screen.getByText("Previous");
+        expect(previButton).toBeDisabled();
 
+        // After Next, 11th entry should show
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);
 
