@@ -157,6 +157,9 @@ describe("OurTable tests", () => {
         const previButton = screen.getByText("Previous");
         expect(previButton).toBeDisabled();
 
+        const inputField = screen.getByRole("spinbutton");
+        expect(inputField).toHaveValue(1);
+
         // After Next, 11th entry should show
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);

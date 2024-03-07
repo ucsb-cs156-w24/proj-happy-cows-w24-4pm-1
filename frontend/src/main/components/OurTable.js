@@ -91,13 +91,13 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
         <button onClick={() => prevPage()} disabled={currentPage === 0}>Previous</button>
         <button onClick={() => nextPage()} disabled={currentPage >= pageCount - 1}>Next</button>
         <span>
-          Page{' '}
+          Page{""}
           <strong>
             {currentPage + 1} of {pageCount}
-          </strong>{' '}
+          </strong>{""}
         </span>
         <span>
-          | Go to page:{' '}
+          | Go to page:{""}
           <input
             type="number"
             defaultValue={currentPage + 1}
