@@ -157,9 +157,15 @@ describe("OurTable tests", () => {
         const previButton = screen.getByText("Previous");
         expect(previButton).toBeDisabled();
 
+        const inputField = screen.getByRole("spinbutton");
+        expect(inputField).toHaveValue(1);
+
         // After Next, 11th entry should show
         const nextButton = screen.getByText("Next");
         fireEvent.click(nextButton);
+
+        const nextiButton = screen.getByText("Next");
+        expect(nextiButton).toBeDisabled();
 
         const col1Row10 = screen.getByTestId("sampleTestId-cell-row-10-col-col1");
         expect(col1Row10).toHaveTextContent("holy moly");
