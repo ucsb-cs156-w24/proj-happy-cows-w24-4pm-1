@@ -101,7 +101,7 @@ export default function OurTable({ columns, data, testid = "testid", ...rest }) 
             // Stryker restore all
             } of {pageCount}
           </strong>{// Stryker disable all
-          " "
+          ""
           // Stryker restore all
         }
         </span>
