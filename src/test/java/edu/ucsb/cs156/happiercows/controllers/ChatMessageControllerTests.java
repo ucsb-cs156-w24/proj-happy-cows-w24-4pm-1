@@ -37,7 +37,15 @@ import edu.ucsb.cs156.happiercows.entities.ChatMessage;
 
 import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
 import edu.ucsb.cs156.happiercows.entities.UserCommons;
+import edu.ucsb.cs156.happiercows.entities.Commons;
+import edu.ucsb.cs156.happiercows.models.HealthUpdateStrategyList;
+import edu.ucsb.cs156.happiercows.repositories.CommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserCommonsRepository;
+import edu.ucsb.cs156.happiercows.repositories.UserRepository;
+import edu.ucsb.cs156.happiercows.strategies.CowHealthUpdateStrategies;
+import edu.ucsb.cs156.happiercows.services.CommonsPlusBuilderService;
 
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -57,7 +65,8 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
 
     //* */ get tests
-    @WithMockUser(roles = {"USER"})
+
+        @WithMockUser(roles = {"USER"})
     @Test
     public void userInCommonsCanGetChatMessages() throws Exception {
         
@@ -74,7 +83,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
         when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
         
-        UserCommons userCommons = UserCommons.builder().build();
+        UserCommons userCommons = UserCommons.builder().commons(Commons.builder().showChat(true).build()).build();
         when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
 
@@ -89,8 +98,7 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
     }
-
-    @WithMockUser(roles = {"ADMIN"})
+@WithMockUser(roles = {"ADMIN"})
     @Test
     public void adminCanGetChatMessages() throws Exception {
         
@@ -147,6 +155,36 @@ public class ChatMessageControllerTests extends ControllerTestCase {
 
     }
     
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userInDisabledCommonsCannotGetChatMessages() throws Exception {
+        
+        // arrange
+        Long commonsId = 1L;
+        Long userId = 1L;
+        int page = 0;
+        int size = 10;
+
+        ChatMessage chatMessage1 = ChatMessage.builder().id(1L).commonsId(commonsId).userId(userId).build();
+        ChatMessage chatMessage2 = ChatMessage.builder().id(2L).commonsId(commonsId).userId(userId).build();
+
+        Page<ChatMessage> pageOfChatMessages = new PageImpl<ChatMessage>(Arrays.asList(chatMessage1, chatMessage2));
+
+        when(chatMessageRepository.findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()))).thenReturn(pageOfChatMessages);
+        
+        UserCommons userCommons = UserCommons.builder().commons(Commons.builder().showChat(false).build()).build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+
+
+        // act
+        MvcResult response = mockMvc.perform(get("/api/chat/get?commonsId={commonsId}&page={page}&size={size}", commonsId, page, size))
+            .andExpect(status().isForbidden()).andReturn();
+
+        // assert
+        verify(chatMessageRepository, times(0)).findByCommonsId(commonsId, PageRequest.of(page, size, Sort.by("timestamp").descending()));
+    }
+
+
     //* */ admin/get tests
     @WithMockUser(roles = {"ADMIN"})
     @Test
@@ -330,6 +368,88 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         assertEquals(expectedResponseString, responseString);
     }
 
+    @WithMockUser(roles = {"ADMIN"})
+    @Test
+    public void adminCanPostChatMessagesInDisabledCommons() throws Exception {
+        
+        // arrange
+        Long commonsId = 1L;
+        Long userId = 1L;
+        String content = "Hello world!";
+
+        ChatMessage chatMessage = ChatMessage.builder().id(0L).commonsId(commonsId).userId(userId).message(content).build();
+
+        when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
+       
+	LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        UserCommons userCommons = UserCommons.builder()
+            .commons(Commons.builder()
+             .name("Jackson's Commons")
+             .cowPrice(500.99)
+             .milkPrice(8.99)
+             .startingBalance(1020.10)
+             .startingDate(someTime)
+             .degradationRate(50.0)
+             .showLeaderboard(false)
+	     .showChat(false)
+             .carryingCapacity(100)
+             .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
+             .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+	     .build())
+            .build();
+	when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+ 
+        //act 
+        MvcResult response = mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+            .andExpect(status().isOk()).andReturn();
+
+        // assert
+        verify(chatMessageRepository, atLeastOnce()).save(any(ChatMessage.class));
+        String responseString = response.getResponse().getContentAsString();
+        String expectedResponseString = mapper.writeValueAsString(chatMessage);
+        log.info("Got back from API: {}",responseString);
+        assertEquals(expectedResponseString, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userCannotPostChatMessagesInDisabledCommons() throws Exception {
+        
+        // arrange
+        Long commonsId = 1L;
+        Long userId = 1L;
+        String content = "Hello world!";
+
+        ChatMessage chatMessage = ChatMessage.builder().id(0L).commonsId(commonsId).userId(userId).message(content).build();
+
+        when(chatMessageRepository.save(any(ChatMessage.class))).thenReturn(chatMessage);
+       
+    LocalDateTime someTime = LocalDateTime.parse("2022-03-05T15:50:10");
+        UserCommons userCommons = UserCommons.builder()
+            .commons(Commons.builder()
+             .name("Jackson's Commons")
+             .cowPrice(500.99)
+             .milkPrice(8.99)
+             .startingBalance(1020.10)
+             .startingDate(someTime)
+             .degradationRate(50.0)
+             .showLeaderboard(false)
+             .showChat(false)
+             .carryingCapacity(100)
+             .aboveCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Constant)
+             .belowCapacityHealthUpdateStrategy(CowHealthUpdateStrategies.Linear)
+         .build())
+            .build();
+    when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+ 
+        //act 
+        MvcResult response = mockMvc.perform(post("/api/chat/post?commonsId={commonsId}&content={content}", commonsId, content).with(csrf()))
+            .andExpect(status().isForbidden()).andReturn();
+
+        // assert
+        verify(chatMessageRepository, times(0)).save(any(ChatMessage.class));
+    }
+
     //* */ hide tests
     @WithMockUser(roles = {"ADMIN"})
     @Test
@@ -380,9 +500,16 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         
         // arrange
         Long messageId = 0L;
+        Long commonsId = 1L;
+        Long userId = 1L;
 
-        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).build();
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
         when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
+
+        UserCommons userCommons = UserCommons.builder()
+                .commons(Commons.builder().showChat(true).build())
+                .build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
 
         //act 
         MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
@@ -396,6 +523,31 @@ public class ChatMessageControllerTests extends ControllerTestCase {
         String expectedResponseString = mapper.writeValueAsString(chatMessage);
         log.info("Got back from API: {}",responseString);
         assertEquals(expectedResponseString, responseString);
+    }
+
+    @WithMockUser(roles = {"USER"})
+    @Test
+    public void userCannotDeleteTheirOwnChatMessagesInDisabledCommons() throws Exception {
+        
+        // arrange
+        Long messageId = 0L;
+        Long commonsId = 1L;
+        Long userId = 1L;
+
+        ChatMessage chatMessage = ChatMessage.builder().id(messageId).userId(1L).commonsId(1L).build();
+        when(chatMessageRepository.findById(messageId)).thenReturn(Optional.of(chatMessage));
+
+        UserCommons userCommons = UserCommons.builder()
+                .commons(Commons.builder().showChat(false).build())
+                .build();
+        when(userCommonsRepository.findByCommonsIdAndUserId(commonsId, userId)).thenReturn(Optional.of(userCommons));
+
+        //act 
+        MvcResult response = mockMvc.perform(put("/api/chat/hide?chatMessageId={messageId}", messageId).with(csrf()))
+            .andExpect(status().isForbidden()).andReturn();
+
+        // assert
+        verify(chatMessageRepository, times(0)).save(any(ChatMessage.class));
     }
 
     // Users cannot hide messages hat aren't their own
